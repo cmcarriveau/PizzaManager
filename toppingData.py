@@ -116,7 +116,10 @@ def deleteData(type, name):
         document = collection.find_one({"id": "1"})
 
         if document:
+            #find the recipe name in the database
             exists = collection.find_one({"type": "toppings", f"{type}.name": name})
+            
+            #if it exists then update it by removing it
             if exists: 
                 toDelete = collection.update_one(
                     {"type": "toppings", f"{type}.name": name},  

@@ -33,7 +33,7 @@ def addToppingWindow(saucesListbox, cheesesListbox, meatsListbox, veggiesListbox
         
     #pop open new window
     add_topping_window = tk.Toplevel(root)
-    add_topping_window.title("Add")
+    add_topping_window.title("Add Topping")
     add_topping_window.transient(root)
     add_topping_window.grab_set()
     add_topping_window.geometry("450x300")
@@ -99,13 +99,13 @@ def deleteTopping(saucesListbox, cheesesListbox, meatsListbox, veggiesListbox, l
             if result == 1:
                  listbox.delete(index)
                  refresh(saucesListbox, cheesesListbox, meatsListbox, veggiesListbox)
-                 errorLbl.config(text=f"{selected[0]} was deleted!", fg="green")
+                 errorLbl.config(text=f"{selected} was deleted!", fg="green")
                  errorLbl.grid()
         else:
-            errorLbl.config(text="Topping could not be deleted.")
+            errorLbl.config(text="Topping could not be deleted.", rg="red")
             errorLbl.grid()
     else:
-         errorLbl.config(text="Select a topping to delete first.")
+         errorLbl.config(text="Select a topping to delete first.", rg="red")
          errorLbl.grid()
 
 def getEdit(saucesListbox, cheesesListbox, meatsListbox, veggiesListbox, listboxType, errorLbl, root):
@@ -158,7 +158,7 @@ def editToppingWindow(saucesListbox, cheesesListbox, meatsListbox, veggiesListbo
 
     #pop open new window
     edit_window = tk.Toplevel(root)
-    edit_window.title("Edit")
+    edit_window.title("Edit Toppings")
     edit_window.transient(root)
     edit_window.grab_set()
     edit_window.geometry("450x300")

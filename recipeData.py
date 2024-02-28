@@ -27,7 +27,6 @@ def getRecipeData():
             #will return empty object in the case of a database error
             print("no data found")
             fail = {
-                    "id": "2",
                     "recipes": [
                         {
                         "name": "Database Error",
@@ -54,6 +53,94 @@ def createRecipeList(data):
     recipeBook = RecipeBook(recipes)
 
     return recipeBook
+
+def addRecipeData(name, ingredientsList):
+    try:
+        #connect to database
+        cluster = "mongodb+srv://carissa:Sj67IbVeK2byWQ9G@clusters.ngx304e.mongodb.net/?retryWrites=true&w=majority&appName=Clusters"
+        client = MongoClient(cluster)
+
+        #access database and collection 
+        db = client["PizzaData"]
+        collection = db["Recipes"]
+
+        #find document
+        document = collection.find_one()
+
+        if document:
+            existingRecipe = collection.find_one({"recipes.recipeName": name})
+            if existingRecipe: 
+                success = 0
+            else: 
+                #retrieve data
+                newIngredients = []
+                for ingredient in ingredientsList:
+                    newIngredients.append({"name": ingredient})
+
+                #create new recipe
+                newRecipe = {
+                    "recipeName": name,
+                    "ingredients": newIngredients
+                }
+
+                #add recipe to document
+                document["recipes"].append(newRecipe)
+
+                #update ingredients list
+                collection.update_one({"_id": document["_id"]}, {"$set": document})
+
+                print(name, "was added to recipes")
+                success = 1
+        else:
+            print("Not found")
+
+        client.close()     
+
+        return success
+
+    #catch any errors
+    except Exception as e:
+        print("Error:", e)
+
+def deleteRecipeData(name):
+    try:
+        success = 0
+        #connect to database
+        cluster = "mongodb+srv://carissa:Sj67IbVeK2byWQ9G@clusters.ngx304e.mongodb.net/?retryWrites=true&w=majority&appName=Clusters"
+        client = MongoClient(cluster)
+
+        #access database and collection 
+        db = client["PizzaData"]
+        collection = db["Recipes"]
+
+        document = collection.find_one()
+
+        if document:
+            #find the recipe name in the database
+            exists = collection.find_one({"recipes.recipeName": name})
+
+            #if it exists then update it by removing it
+            if exists: 
+                toDelete = collection.update_one(
+                    {"recipes.recipeName": name},
+                    {"$pull": {"recipes": {"recipeName": name}}}
+                )
+                if toDelete.matched_count > 0:
+                    print(name, "was removed from the recipe book")
+                    success = 1
+                else:
+                    print(name, "could not be deleted from the recipe book") 
+                    success = 0   
+            else:
+                print(name, "in section does not exist in the database")
+                success = 0
+
+        client.close()   
+
+        return success        
+    #catch any errors
+    except Exception as e:
+        print("Error:", e)
 
 class Ingredient:
     def __init__(self, name):
