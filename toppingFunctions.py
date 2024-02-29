@@ -19,6 +19,7 @@ def addToppingWindow(saucesListbox, cheesesListbox, meatsListbox, veggiesListbox
             if success == 0:
                 failed.grid()
             else:
+                #refresh and close after adding
                 failed.grid_remove()
                 add_topping_window.destroy()
                 refresh(saucesListbox, cheesesListbox, meatsListbox, veggiesListbox)
@@ -97,6 +98,7 @@ def deleteTopping(saucesListbox, cheesesListbox, meatsListbox, veggiesListbox, l
             #call delete function
             result = deleteData(toppingType, selected)
             if result == 1:
+                 #delete from listbox and refresh
                  listbox.delete(index)
                  refresh(saucesListbox, cheesesListbox, meatsListbox, veggiesListbox)
                  errorLbl.config(text=f"{selected} was deleted!", fg="green")
@@ -134,7 +136,6 @@ def editToppingWindow(saucesListbox, cheesesListbox, meatsListbox, veggiesListbo
     def editTopping():
         newName = newTopping.get()
         if name and type:
-            empty.grid_remove()
             #calls function to edit data in database
             success = editData(type, name, newName)
             if success == 0:
@@ -150,7 +151,7 @@ def editToppingWindow(saucesListbox, cheesesListbox, meatsListbox, veggiesListbo
                 errorLbl.grid()        
         else:
              #ask user to fill all fields
-             empty.grid()
+             empty.config(text="Please enter all fields!")
     
     #closes when cancel button pressed
     def close():
@@ -199,9 +200,9 @@ def editToppingWindow(saucesListbox, cheesesListbox, meatsListbox, veggiesListbo
     failed.grid_remove()
 
     #enter fields label
-    empty = Label(edit_window, text="Please enter all fields!", fg="red")
+    empty = Label(edit_window, text=" ", fg="red")
     empty.grid(row=4, column=1, pady=10, padx=10)
-    empty.grid_remove()
+
      
 def refresh(saucesListbox, cheesesListbox, meatsListbox, veggiesListbox):
     #get toppings objects

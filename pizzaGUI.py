@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import *
 from toppingFunctions import loadToppings, addToppingWindow, deleteTopping, getEdit
-from recipeFunctions import deleteRecipe, addRecipeWindow, loadRecipes
+from recipeFunctions import deleteRecipe, addRecipeWindow, loadRecipes, editRecipeWindow
 
 #class for displaying selected page
 class tkinterManager(tk.Tk):
@@ -156,7 +156,7 @@ class ChefPage(tk.Frame):
         tk.Frame.__init__(self, parent)
 
         def refreshRecipes():
-            print("refreshrecipe")
+            #destroy all old listboxes and buttons
             for listbox in self.recipeListboxes:
                 listbox.destroy()
             self.recipeListboxes = []
@@ -166,7 +166,8 @@ class ChefPage(tk.Frame):
             self.recipeRadiobuttons = []
 
             recipeBook = loadRecipes()
-            # Create new listboxes and radiobuttons based on recipe data (replace `recipeBook` with your structure)
+            #create new listboxes and radiobuttons based on updated recipe data
+            #and write new information into the listboxes and radiobuttons
             for i, recipe in enumerate(recipeBook.recipes):
                 listbox = Listbox(self, width=27, height=(len(recipe.ingredients) + 1), selectmode=NONE)
                 listbox.grid(row=i+4, column=1, padx=10, pady=10)
@@ -181,34 +182,32 @@ class ChefPage(tk.Frame):
                     rb.grid(row=i+4, column=2, padx=(0, 10), pady=10)
                     self.recipeRadiobuttons.append(rb)
         
-        def addToListbox():
-             # Create a new listbox
-            listbox = Listbox(self, width=27, height=(len(recipe.ingredients) + 1), selectmode=NONE)
-            listbox.grid(row=len(self.recipeListboxes)+4, column=1, padx=10, pady=10)  # Adjust row based on existing listboxes
-
-            for recipe in enumerate(recipeBook.recipes):
-                # Add recipe name and ingredients
-                listbox.insert(END, recipe.recipeName)
-                for ingredient in recipe.ingredients:
-                    listbox.insert(END, f"- {ingredient.name}")
-                
-                for recipe in enumerate(recipeBook.recipes):
-                    # Create and append a radiobutton
-                    rb = Radiobutton(self, text="Select", variable=self.selected, value=len(self.recipeListboxes), takefocus=False)
-                    rb.grid(row=len(self.recipeListboxes)+4, column=2, padx=(0, 10), pady=10)  # Adjust row based on existing listboxes
-
-            # Append the new listbox and radiobutton to the existing lists
-            self.recipeListboxes.append(listbox)
-            self.recipeRadiobuttons.append(rb)
-
+        #calls delete functions
         def callDelete():
-            deleteRecipe(self, self.selected, errorLbl, self.recipeListboxes, self.recipeRadiobuttons)
+            deleteRecipe(self.selected, errorLbl, self.recipeListboxes, self.recipeRadiobuttons)
             refreshRecipes()
 
+        #calls add function
         def callAdd():
-            addRecipeWindow(self, errorLbl)
-            print("after add")
-            addToListbox()
+            addRecipeWindow(self, errorLbl, addCallback)
+
+        #calls edit functions
+        def callEdit():
+            index = self.selected.get()
+            if index == -1:
+                #if none are selected, print error message
+                errorLbl.config(text="Select a recipe to edit", fg="red")
+            else:
+                #get the name of the recipe to delete
+                recipeBook = loadRecipes()
+                toEdit = recipeBook.recipes[index]
+                editRecipeWindow(self, errorLbl, addCallback, toEdit)
+
+        #calls back from other window
+        def addCallback(result):
+            #when it is back call refreshRecipes
+            if result:
+                self.after(100, lambda: refreshRecipes())
 
         #home button
         homeBtn = Button(self, text="< Home", fg="blue", command=lambda: controller.display(HomePage))
@@ -255,7 +254,7 @@ class ChefPage(tk.Frame):
         addBtn.grid(row=2, column=0, pady=10, padx=10)
 
         #edit button 
-        editBtn = Button(self, text="Edit", fg="blue")
+        editBtn = Button(self, text="Edit", fg="blue", command=lambda: callEdit())
         editBtn.grid(row=2, column=1, pady=10, padx=10)
 
         #delete button

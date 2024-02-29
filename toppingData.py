@@ -79,11 +79,14 @@ def addData(type, name):
 
         document = collection.find_one({"id": "1"})
 
+        #find topping in database and add it to topping database
         if document:
+            #tests if it exists
             existingTopping = collection.find_one({"type": "toppings", f"{type}.name": name})
             if existingTopping:
                 success = 0
             else:
+                #add it if it doesn't
                 newTopping = {"name": name}
                 document[type].append(newTopping)
 
@@ -159,6 +162,7 @@ def editData(type, name, newName):
             #tests if the topping exists
             exists = collection.find_one({"type": "toppings", f"{type}.name": name})
             if exists: 
+                #update topping
                 toEdit = collection.update_one(
                     {"type": "toppings", f"{type}.name": name},  
                     {"$set": {f"{type}.$.name": newName}}    
