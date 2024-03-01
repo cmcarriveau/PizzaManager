@@ -26,6 +26,8 @@ def deleteRecipe(selected, errorLbl, recipeListboxes, recipeRadiobuttons):
             recipeRadiobuttons[index].destroy()
             errorLbl.config(text=f"{toDelete} was deleted!", fg="green")
             errorLbl.grid()
+        else:
+            errorLbl.config(text=f"{toDelete} could not be deleted!", fg="red")
 
 def addRecipeWindow(root, errorLbl, addCallback):         
     def addRecipe():
@@ -181,8 +183,8 @@ def editRecipeWindow(root, errorLbl, addCallback, toEdit):
                 ingredientList.append(checkbox["checkbox"]["text"])
 
         #add recipe to database
-        success = editRecipeData(toEdit, ingredientList)
-        if success == 0:
+        success = editRecipeData(toEdit.recipeName, ingredientList)
+        if success == 0 or success == 2:
                 #show error if it already exists
             failed.config(text="This recipe could not be updated!")
         else:

@@ -16,7 +16,7 @@ def addToppingWindow(saucesListbox, cheesesListbox, meatsListbox, veggiesListbox
         if name and type:
             empty.grid_remove()
             success = addData(type, name)
-            if success == 0:
+            if success == 0 or success == 2:
                 failed.grid()
             else:
                 #refresh and close after adding
@@ -138,7 +138,7 @@ def editToppingWindow(saucesListbox, cheesesListbox, meatsListbox, veggiesListbo
         if name and type:
             #calls function to edit data in database
             success = editData(type, name, newName)
-            if success == 0:
+            if success == 0 or success == 2:
                 #tells user the topping already exists
                 failed.grid()
             else:
@@ -201,7 +201,7 @@ def editToppingWindow(saucesListbox, cheesesListbox, meatsListbox, veggiesListbo
 
     #enter fields label
     empty = Label(edit_window, text=" ", fg="red")
-    empty.grid(row=4, column=1, pady=10, padx=10)
+    empty.grid(row=5, column=1, pady=10, padx=10)
 
      
 def refresh(saucesListbox, cheesesListbox, meatsListbox, veggiesListbox):

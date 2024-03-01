@@ -79,7 +79,7 @@ class OwnerPage(tk.Frame):
         #load list
         toppings = loadToppings()
 
-        #print list
+        #print lists
         #sauce label
         saucesLabel = Label(self, text="Sauces:")
         saucesLabel.grid(row=3, column=0, pady=10, padx=10)

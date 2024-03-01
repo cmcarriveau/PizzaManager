@@ -136,7 +136,7 @@ def deleteData(type, name):
                     success = 0   
             else:
                 print(name, "in section", type, "does not exist in the database")
-                success = 0
+                success = 2
 
         client.close()   
 
@@ -147,7 +147,7 @@ def deleteData(type, name):
 
 def editData(type, name, newName):
     try:
-        success = 0
+        success = 0      
         #connect to database
         cluster = "mongodb+srv://carissa:Sj67IbVeK2byWQ9G@clusters.ngx304e.mongodb.net/?retryWrites=true&w=majority&appName=Clusters"
         client = MongoClient(cluster)
@@ -175,7 +175,7 @@ def editData(type, name, newName):
                     success = 0   
             else:
                 print(name, "in section", type, "does not exist in the database")
-                success = 0
+                success = 2
 
         client.close()   
 
@@ -198,3 +198,4 @@ class Toppings:
         self.cheeses = [Topping(cheese['name']) for cheese in cheeses]
         self.meats = [Topping(meat['name']) for meat in meats]
         self.veggies = [Topping(veggie['name']) for veggie in veggies]
+

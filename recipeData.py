@@ -132,8 +132,8 @@ def deleteRecipeData(name):
                     print(name, "could not be deleted from the recipe book") 
                     success = 0   
             else:
-                print(name, "in section does not exist in the database")
-                success = 0
+                print(name, "does not exist in the database")
+                success = 2
 
         client.close()   
 
@@ -161,21 +161,21 @@ def editRecipeData(toEdit, ingredientsList):
             for ingredient in ingredientsList:
                 newIngredients.append({"name": ingredient})
 
-            exists = collection.find_one({"recipes.recipeName": toEdit.recipeName})
+            exists = collection.find_one({"recipes.recipeName": toEdit})
             if exists: 
                 edited = collection.update_one(
-                    {"recipes.recipeName": toEdit.recipeName},  # Filter for the recipe name
+                    {"recipes.recipeName": toEdit},  # Filter for the recipe name
                     {"$set": {"recipes.$.ingredients": newIngredients}}    
                 )
                 if edited.matched_count > 0:
-                    print(toEdit.recipeName, "was changed!")
+                    print(toEdit, "was changed!")
                     success = 1
                 else:
-                    print(toEdit.recipeName, "could not be changed") 
+                    print(toEdit, "could not be changed") 
                     success = 0   
             else:
-                print(toEdit.recipeName, "does not exist in the database")
-                success = 0
+                print(toEdit, "does not exist in the database")
+                success = 2
 
         client.close()   
 
